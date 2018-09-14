@@ -1,46 +1,33 @@
 package main
 
-import "github.com/nsf/termbox-go"
+import (
+	"fmt"
+	"github.com/nsf/termbox-go"
+)
 import "math/rand"
-import "time"
 
-func draw() {
-	w, h := termbox.Size()
-	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
-			termbox.SetCell(x, y, 'Ы', termbox.ColorDefault,
-				termbox.Attribute(rand.Int()%8)+1)
-		}
-	}
-	termbox.Flush()
+func close_console() { //should be defered!
+	termbox.Close()
 }
 
-func start_drawing() {
+func init_console() {
 	err := termbox.Init()
 	if err != nil {
 		panic(err)
 	}
-	defer termbox.Close()
 
-	event_queue := make(chan termbox.Event)
-	go func() {
-		for {
-			event_queue <- termbox.PollEvent()
-		}
-	}()
+	defer fmt.Print("Console successfully inited")
+}
 
-	draw()
-loop:
-	for {
-		select {
-		case ev := <-event_queue:
-			if ev.Type == termbox.EventKey && ev.Key == termbox.KeyEsc {
-				break loop
-			}
-		default:
-			draw()
-			time.Sleep(1000 * time.Millisecond)
-		}
-	}
+func put_char(c rune, x, y int) {
+	termbox.SetCell(x, y, c, termbox.ColorDefault,
+		termbox.Attribute(rand.Int()%8)+1)
+}
+
+func clear_console() {
+	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+}
+
+func flush_console() {
+	termbox.Flush()
 }
