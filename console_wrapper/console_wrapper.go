@@ -1,4 +1,4 @@
-package main
+package console_wrapper
 
 import (
 	"github.com/nsf/termbox-go"

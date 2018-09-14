@@ -3,6 +3,7 @@ package main
 // This file is for the lib test purposes only.
 
 import (
+	"./console_wrapper" //TODO: check why this shit doesn't want to work.
 	"fmt"
 	"github.com/nsf/termbox-go"
 	"time"
@@ -10,20 +11,20 @@ import (
 
 func main() {
 	fmt.Print("I'M NOT DONE YET!")
-	init_console()
-	defer close_console()
+	console_wrapper.init_console()
+	defer console_wrapper.close_console()
 	start_drawing()
 }
 
 func draw() {
 	w, h := termbox.Size()
-	clear_console()
+	console_wrapper.clear_console()
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
-			put_char('Ы', x, y)
+			console_wrapper.put_char('Ы', x, y)
 		}
 	}
-	flush_console()
+	console_wrapper.flush_console()
 }
 
 func start_drawing() {
