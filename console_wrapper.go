@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/nsf/termbox-go"
 )
 import "math/rand"
@@ -15,8 +14,6 @@ func init_console() {
 	if err != nil {
 		panic(err)
 	}
-
-	defer fmt.Print("Console successfully inited")
 }
 
 func put_char(c rune, x, y int) {
