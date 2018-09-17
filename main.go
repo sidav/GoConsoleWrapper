@@ -3,49 +3,26 @@ package main
 // This file is for the lib test purposes only.
 
 import (
-	"GoConsoleWrapper/console_wrapper" //TODO: check why this shit doesn't want to work.
-	"fmt"
-	"github.com/nsf/termbox-go"
+	cw "GoConsoleWrapper/console_wrapper" //TODO: check why this shit doesn't want to work.
 	"time"
 )
 
 func main() {
-	fmt.Print("I'M NOT DONE YET!")
-	console_wrapper.Init_console()
-	defer console_wrapper.Close_console()
-	start_drawing()
-}
-
-func draw() {
-	w, h := termbox.Size()
-	console_wrapper.Clear_console()
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
-			console_wrapper.Put_char('Ы', x, y)
-		}
-	}
-	console_wrapper.Flush_console()
-}
-
-func start_drawing() {
-	event_queue := make(chan termbox.Event)
+	cw.Init_console()
+	defer cw.Close_console()
 	go func() {
-		for {
-			event_queue <- termbox.PollEvent()
-		}
+		cw.Run_event_listener()
 	}()
 
-	draw()
-loop:
-	for {
-		select {
-		case ev := <-event_queue:
-			if ev.Type == termbox.EventKey && ev.Key == termbox.KeyEsc {
-				break loop
-			}
-		default:
-			draw()
-			time.Sleep(1000 * time.Millisecond)
-		}
+	test_wrapper()
+}
+
+func test_wrapper() {
+	for i := 0; i < 20; i++ {
+		fuck := cw.Read_key_char()
+		cw.Set_color(i, nil)
+		cw.Put_char(fuck, 0, 0)
+		cw.Flush_console()
+		time.Sleep(200 * time.Millisecond)
 	}
 }
