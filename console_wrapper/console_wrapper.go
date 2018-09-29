@@ -79,7 +79,13 @@ func Await_keypress() rune {
 
 }
 
-func Read_key_char() rune {
+func ReadKey() string {
 	ev := <-event_queue
-	return ev.Ch
+	if ev.Key == termbox.KeyEsc {
+		return "ESCAPE"
+	}
+	if ev.Type == termbox.EventKey {
+		return string(ev.Ch)
+	}
+	return "KEY_EMPTY_WTF_HAPPENED"
 }
