@@ -12,6 +12,18 @@ var (
 
 /* PUBLIC SHIT BELOW */
 
+const (
+	WHITE   = 0
+	BLACK   = 1
+	RED     = 2
+	GREEN   = 3
+	YELLOW  = 4
+	BLUE    = 5
+	MAGENTA = 6
+	CYAN    = 7
+	BEIGE   = 8
+)
+
 func Close_console() { //should be defered!
 	termbox.Close()
 }
@@ -50,7 +62,7 @@ func Put_string(s string, x, y int) {
 }
 
 func Clear_console() {
-	termbox.Clear(fg_color, bg_color)
+	termbox.Clear(WHITE, BLACK)
 }
 
 func Flush_console() {

@@ -4,7 +4,7 @@ package main
 
 import (
 	cw "GoConsoleWrapper/console_wrapper" //TODO: check why this shit doesn't want to work.
-	"time"
+	"fmt"
 )
 
 func main() {
@@ -19,10 +19,11 @@ func main() {
 
 func test_wrapper() {
 	for i := 0; i < 20; i++ {
-		fuck := cw.Read_key_char()
 		cw.Set_color(i, nil)
-		cw.Put_char(fuck, 0, 0)
-		cw.Flush_console()
-		time.Sleep(200 * time.Millisecond)
+		cw.Put_string(fmt.Sprintf("This is %d", i), 0, i)
+	}
+	cw.Flush_console()
+	for i := cw.Read_key_char(); i != 'e'; {
+
 	}
 }
