@@ -115,10 +115,26 @@ func (t *treeNode) splitNTimes(n int) {
 	}
 }
 
+func countOutsizedRooms(node *treeNode) int {
+	total := 0
+	if node.left == nil {
+		if node.room.w > MAX_ROOM_W || node.room.h > MAX_ROOM_H {
+			return 1
+		}
+		return 0
+	} else {
+		total += countOutsizedRooms(node.left)
+		total += countOutsizedRooms(node.right)
+	}
+	return total
+}
+
 /////////////////////////////////////////
 
 const (
-	TRIES_FOR_SPLITTING = 10
+	TRIES_FOR_SPLITTING  = 10
+	TRIES_FOR_GENERATION = 1000
+	MAX_OUTSIZED_ROOMS   = 5
 )
 
 var (
@@ -128,8 +144,8 @@ var (
 	SPLIT_MIN_RATIO   = 30 // in percent.
 	MIN_ROOM_W        = 4
 	MIN_ROOM_H        = 4
-	MAX_ROOM_W        = 10 // this and next lines are not guaranteed. Think of them as a recommendations.
-	MAX_ROOM_H        = 5  //
+	MAX_ROOM_W        = 20 // this and next lines are not guaranteed. Think of them as a recommendations.
+	MAX_ROOM_H        = 10 //
 	HORIZ_PROBABILITY = 30 // in percent. Horiz splits should occur less frequently than vertical ones because of w > h
 )
 
@@ -137,24 +153,29 @@ func GenerateDungeon(width, height, splits, sp_prob, sp_ratio, h_prob int) *retu
 	MAP_W = width
 	MAP_H = height
 	if splits == 0 {
-		splits = 5
+		splits = 6
 	}
-	SPLIT_PROBABILITY = sp_prob
-	if SPLIT_PROBABILITY == 0 {
-		SPLIT_PROBABILITY = 70
+	if sp_prob != 0 {
+		SPLIT_PROBABILITY = sp_prob
 	}
-	SPLIT_MIN_RATIO = sp_ratio
-	if SPLIT_MIN_RATIO == 0 {
-		SPLIT_MIN_RATIO = 30
+	if sp_ratio != 0 {
+		SPLIT_MIN_RATIO = sp_ratio
 	}
-	HORIZ_PROBABILITY = h_prob
-	if HORIZ_PROBABILITY == 0 {
-		HORIZ_PROBABILITY = 30
+	if h_prob != 0 {
+		HORIZ_PROBABILITY = h_prob
 	}
-	// generate parent node
-	treeRoot = &treeNode{room: &container{x: 0, y: 0, w: MAP_W, h: MAP_H}}
-	// recursively split into rooms
-	treeRoot.splitNTimes(splits)
+
+	for i := 0; i < TRIES_FOR_GENERATION; i++ {
+		// generate parent node
+		treeRoot = &treeNode{room: &container{x: 0, y: 0, w: MAP_W, h: MAP_H}}
+		// recursively split into rooms
+		treeRoot.splitNTimes(splits)
+		if countOutsizedRooms(treeRoot) > MAX_OUTSIZED_ROOMS {
+			continue
+		} else {
+			break
+		}
+	}
 
 	// init returning struct
 	result := &returningMap{}
