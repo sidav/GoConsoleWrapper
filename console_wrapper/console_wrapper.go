@@ -84,6 +84,12 @@ func ReadKey() string {
 	if ev.Key == termbox.KeyEsc {
 		return "ESCAPE"
 	}
+	if ev.Key == termbox.KeyEnter {
+		return "ENTER"
+	}
+	if ev.Key == termbox.KeyTab {
+		return "TAB"
+	}
 	if ev.Type == termbox.EventKey {
 		return string(ev.Ch)
 	}
