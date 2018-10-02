@@ -204,32 +204,27 @@ func renderTreeToDungeonMap(node *treeNode, dmap *returningMap) {
 	}
 }
 
+// BUGGED! Rooms connectivity still not guaranteed! 
 func addDoorsForDungeonMap(node *treeNode, dmap *returningMap) {
 	if node.left != nil {
 		lx, ly := node.left.room.returnCenter()
 		rx, ry := node.right.room.returnCenter()
-		xstep := 1
 
-		if lx > rx {
-			xstep = -1
-		}
-		ystep := 1
-		if ly > ry {
-			ystep = -1
-		}
 		if ly == ry {
 			// ly += randInRange(-MIN_ROOM_H/2, MIN_ROOM_H/2)
-			for x := lx; x != rx; x += xstep {
+			for x := lx; x < rx; x ++ {
 				if dmap.getCell(x, ly) == '#' {
 					dmap.setCell('+', x, ly)
+					x += 3
 				}
 			}
 		}
 		if lx == rx {
 			// lx += randInRange(-MIN_ROOM_W/2, MIN_ROOM_W/2)
-			for y := ly; y != ry; y += ystep {
+			for y := ly; y < ry; y ++ {
 				if dmap.getCell(lx, y) == '#' {
 					dmap.setCell('+', lx, y)
+					y += 3
 				}
 			}
 		}
