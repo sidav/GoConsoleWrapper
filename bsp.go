@@ -9,7 +9,7 @@ func randInRange(from, to int) int { //should be inclusive
 	if from == to {
 		return from
 	}
-	return Random(to-from) + from // TODO: replace routines.random usage with package own implementation
+	return Random(to-from+1) + from // TODO: replace routines.random usage with package own implementation
 }
 
 type container struct {
@@ -135,7 +135,7 @@ const (
 	WALL = '#'
 	RIVER = '~'
 	DOOR = '+'
-	FLOOR = ' '
+	FLOOR = '.'
 	TRIES_FOR_SPLITTING  = 10
 	TRIES_FOR_GENERATION = 1000
 	MAX_OUTSIZED_ROOMS   = 5
@@ -211,8 +211,8 @@ func renderTreeToDungeonMap(node *treeNode, dmap *returningMap) {
 
 func addRiverForDungeonMap(dmap *returningMap, riverWidth int) {
 	x := randInRange(MAP_W / 3, MAP_W * 2 / 3)
-	bridgeYCoord := randInRange(1, MAP_H-1)
 	bridgeHeight := 2
+	bridgeYCoord := randInRange(1, MAP_H-1-bridgeHeight)
 	for y:=0; y < MAP_H; y++ {
 		dmap.setCell(FLOOR, x-1, y)
 		dmap.setCell(FLOOR, x+riverWidth, y)
