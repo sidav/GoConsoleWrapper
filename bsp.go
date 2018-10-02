@@ -153,7 +153,7 @@ var (
 	HORIZ_PROBABILITY = 30 // in percent. Horiz splits should occur less frequently than vertical ones because of w > h
 )
 
-func GenerateDungeon(width, height, splits, sp_prob, sp_ratio, h_prob int) *returningMap {
+func GenerateDungeon(width, height, splits, sp_prob, sp_ratio, h_prob, riverWidth int) *returningMap {
 	MAP_W = width
 	MAP_H = height
 	if splits == 0 {
@@ -187,7 +187,9 @@ func GenerateDungeon(width, height, splits, sp_prob, sp_ratio, h_prob int) *retu
 
 	renderTreeToDungeonMap(treeRoot, result)
 	addDoorsForDungeonMap(treeRoot, result)
-	addRiverForDungeonMap(result, 4)
+	if riverWidth > 0 {
+		addRiverForDungeonMap(result, riverWidth)
+	}
 
 	return result
 }
@@ -223,7 +225,7 @@ func addRiverForDungeonMap(dmap *returningMap, riverWidth int) {
 				dmap.setCell(RIVER, x+cx, y)
 			}
 		}
-		leftOrRight := randInRange(0, 5)
+		leftOrRight := randInRange(0, 2)
 		if leftOrRight == 0 {
 			x--
 		}

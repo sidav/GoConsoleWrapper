@@ -55,7 +55,7 @@ func main() {
 outerloop:
 	for {
 		cw.Clear_console()
-		fuck := GenerateDungeon(mapw, maph, splits, splitprob, splitratio, hprob)
+		fuck := GenerateDungeon(mapw, maph, splits, splitprob, splitratio, hprob, 3)
 		for x := 0; x < mapw; x++ {
 			for y := 0; y < maph; y++ {
 				chr := fuck.getCell(x, y)
