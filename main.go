@@ -62,13 +62,11 @@ outerloop:
 			}
 		}
 		cw.Flush_console()
-	innerloop:
-		for key_pressed := cw.ReadKey(); ; {
+		for key_pressed := cw.ReadKey(); key_pressed != "ENTER"; {
 			if key_pressed == "ESCAPE" {
 				break outerloop
-			}
-			if key_pressed == "ENTER" {
-				break innerloop
+			} else {
+				key_pressed = cw.ReadKey()
 			}
 		}
 	}
