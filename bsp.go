@@ -32,7 +32,7 @@ func (r *container) returnCenter() (int, int) {
 func (m *returningMap) init() {
 	m.dmap = make([]rune, MAP_W*MAP_H)
 	for i := 0; i < len(m.dmap); i++ {
-		m.dmap[i] = '.'
+		m.dmap[i] = FLOOR
 	}
 }
 
@@ -132,6 +132,10 @@ func countOutsizedRooms(node *treeNode) int {
 /////////////////////////////////////////
 
 const (
+	WALL = '#'
+	RIVER = '~'
+	DOOR = '+'
+	FLOOR = ' '
 	TRIES_FOR_SPLITTING  = 10
 	TRIES_FOR_GENERATION = 1000
 	MAX_OUTSIZED_ROOMS   = 5
@@ -183,6 +187,7 @@ func GenerateDungeon(width, height, splits, sp_prob, sp_ratio, h_prob int) *retu
 
 	renderTreeToDungeonMap(treeRoot, result)
 	addDoorsForDungeonMap(treeRoot, result)
+	addRiverForDungeonMap(result, 4)
 
 	return result
 }
@@ -195,16 +200,40 @@ func renderTreeToDungeonMap(node *treeNode, dmap *returningMap) {
 		return
 	}
 	for x := node.room.x; x < node.room.x+node.room.w; x++ {
-		dmap.setCell('#', x, node.room.y)
-		dmap.setCell('#', x, node.room.y+node.room.h-1)
+		dmap.setCell(WALL, x, node.room.y)
+		dmap.setCell(WALL, x, node.room.y+node.room.h-1)
 	}
 	for y := node.room.y; y < node.room.y+node.room.h; y++ {
-		dmap.setCell('#', node.room.x, y)
-		dmap.setCell('#', node.room.x+node.room.w-1, y)
+		dmap.setCell(WALL, node.room.x, y)
+		dmap.setCell(WALL, node.room.x+node.room.w-1, y)
 	}
 }
 
-// BUGGED! Rooms connectivity still not guaranteed! 
+func addRiverForDungeonMap(dmap *returningMap, riverWidth int) {
+	x := randInRange(MAP_W / 3, MAP_W * 2 / 3)
+	bridgeYCoord := randInRange(1, MAP_H-1)
+	bridgeHeight := 2
+	for y:=0; y < MAP_H; y++ {
+		dmap.setCell(FLOOR, x-1, y)
+		dmap.setCell(FLOOR, x+riverWidth, y)
+		for cx:=0; cx<riverWidth; cx++ {
+			if y >= bridgeYCoord && y < bridgeYCoord + bridgeHeight {
+				dmap.setCell(FLOOR, x+cx, y)
+			} else {
+				dmap.setCell(RIVER, x+cx, y)
+			}
+		}
+		leftOrRight := randInRange(0, 5)
+		if leftOrRight == 0 {
+			x--
+		}
+		if leftOrRight == 1 {
+			x++
+		}
+	}
+}
+
+// BUGGED! Rooms connectivity still not guaranteed!
 func addDoorsForDungeonMap(node *treeNode, dmap *returningMap) {
 	if node.left != nil {
 		lx, ly := node.left.room.returnCenter()
@@ -213,8 +242,8 @@ func addDoorsForDungeonMap(node *treeNode, dmap *returningMap) {
 		if ly == ry {
 			// ly += randInRange(-MIN_ROOM_H/2, MIN_ROOM_H/2)
 			for x := lx; x < rx; x ++ {
-				if dmap.getCell(x, ly) == '#' {
-					dmap.setCell('+', x, ly)
+				if dmap.getCell(x, ly) == WALL {
+					dmap.setCell(DOOR, x, ly)
 					x += 3
 				}
 			}
@@ -222,8 +251,8 @@ func addDoorsForDungeonMap(node *treeNode, dmap *returningMap) {
 		if lx == rx {
 			// lx += randInRange(-MIN_ROOM_W/2, MIN_ROOM_W/2)
 			for y := ly; y < ry; y ++ {
-				if dmap.getCell(lx, y) == '#' {
-					dmap.setCell('+', lx, y)
+				if dmap.getCell(lx, y) == WALL {
+					dmap.setCell(DOOR, lx, y)
 					y += 3
 				}
 			}
