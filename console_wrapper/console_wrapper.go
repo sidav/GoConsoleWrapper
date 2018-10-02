@@ -42,12 +42,17 @@ func Run_event_listener() { // should be run as go func() {}()
 	}
 }
 
-func Set_color(fg int, bg *int) {
+func SetColor(fg int, bg int) {
 	fg_color = termbox.Attribute(fg)
-	if bg != nil {
-		bg_color = termbox.Attribute(*bg)
-	}
+	bg_color = termbox.Attribute(bg)
+}
 
+func SetFgColor(fg int) {
+	fg_color = termbox.Attribute(fg)
+}
+
+func SetBgColor(bg int) {
+	bg_color = termbox.Attribute(bg)
 }
 
 func Put_char(c rune, x, y int) {
