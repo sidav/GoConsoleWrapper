@@ -58,7 +58,16 @@ outerloop:
 		fuck := GenerateDungeon(mapw, maph, splits, splitprob, splitratio, hprob)
 		for x := 0; x < mapw; x++ {
 			for y := 0; y < maph; y++ {
-				cw.Put_char(fuck.getCell(x, y), x, y)
+				chr := fuck.getCell(x, y)
+				switch chr {
+				case '+':
+					cw.Set_color(cw.BLUE, nil)
+				case '~':
+					cw.Set_color(cw.RED, nil)
+				default:
+					cw.Set_color(cw.BEIGE, nil)
+				}
+				cw.Put_char(chr, x, y)
 			}
 		}
 		cw.Flush_console()
